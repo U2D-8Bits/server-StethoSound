@@ -1,9 +1,12 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { CreateUserDto, LoginDto, UpdateAuthDto, RegisterUserDto } from './dto';
+import { AuthGuard } from './guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,8 +30,12 @@ export class AuthController {
     return this.authService.register(registerDto);
   }
 
+  //Ruta para obtener todos los usuarios
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
+  findAll( @Request() req: Request ) {
+    // const user = req['user']
+    // return user;
     return this.authService.findAll();
   }
 

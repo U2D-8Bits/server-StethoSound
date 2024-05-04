@@ -101,8 +101,15 @@ export class AuthService {
   }
 
   // --------------------------- Rutas para obtener todos los usuarios --------------------------- //
-  findAll() {
-    return `This action returns all auth`;
+  findAll(): Promise <User[]> {
+    return this.userModel.find();
+  }
+
+  // -------------------------------- Find User By ID -------------------------------- //
+  async findUserByID(userId: string){
+    const user = await this.userModel.findById(userId);
+    const { password, ...rest} = user.toJSON(); 
+    return rest;
   }
 
   // --------------------------- Rutas para obtener un usuario --------------------------- //
