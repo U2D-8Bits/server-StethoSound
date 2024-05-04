@@ -1,8 +1,11 @@
 /* eslint-disable prettier/prettier */
 
+
 import { IsEmail, IsPhoneNumber, IsString, Length, MaxLength } from "class-validator";
 
-export class CreateUserDto {
+
+
+export class RegisterUserDto {
 
     @IsString()
     name: string;
@@ -24,8 +27,4 @@ export class CreateUserDto {
 
     @Length( 10, 10)
     ced: string;
-
-    @IsString()
-    roles: string[];
-
 }
