@@ -5,8 +5,8 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 @Schema()
 export class User {
-    @Prop({unique: true})
-    id: string;
+
+    _id?: string;
 
     @Prop({required: true})
     name: string;
@@ -29,7 +29,7 @@ export class User {
     @Prop({unique: true, required: true,})
     ced: string;
 
-    @Prop({type:[String], default: ['admin']})
+    @Prop({type:[String], default: ['user']})
     roles: string[];
 
     @Prop({default: true})
