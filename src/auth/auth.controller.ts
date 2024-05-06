@@ -15,6 +15,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   // Ruta para crear un usuario
+  @UseGuards(AuthGuard)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.authService.create(createUserDto);

@@ -41,11 +41,14 @@ export class AuthService {
 
       return user;
     } catch (error) {
+      console.log({error});
       console.log(error.code);
+      console.log(error.message);
       if (error.code === 11000) {
-        throw new BadRequestException(
-          `Hay valores que ya fueron registrados en la base de datos`,
-        );
+        if( error.keyValue.username) throw new BadRequestException('El nombre de usuario ya esta en uso');
+        if( error.keyValue.email) throw new BadRequestException('El correo ya esta en uso');
+        if( error.keyValue.phone) throw new BadRequestException('El telefono ya esta en uso');
+        if( error.keyValue.ced) throw new BadRequestException('La cedula ya esta en uso');
       }
       throw new InternalServerErrorException(error.message);
     }
@@ -82,12 +85,12 @@ export class AuthService {
 
     // Verificar si el usuario existe
     if (!user) {
-      throw new UnauthorizedException('Credenciales invalidas - username');
+      throw new UnauthorizedException('Usuario o Contraseña invalidos');
     }
 
     // Verificar si la contrasena es correcta
     if (!bcryptjs.compareSync(password, user.password)) {
-      throw new UnauthorizedException('Credenciales invalidas - password');
+      throw new UnauthorizedException('Usuario o Contraseña invalidos');
     }
 
     // Desestructurar la contrasena del usuario y retornar el usuario
