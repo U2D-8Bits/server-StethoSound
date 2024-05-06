@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
@@ -10,10 +10,10 @@ import * as bcryptjs from 'bcryptjs';
 
 
 import { User } from './entities/user.entity';
-import { RegisterUserDto, CreateUserDto, UpdateAuthDto, LoginDto } from './dto';
+import { RegisterUserDto, CreateUserDto, UpdateUserDto, LoginDto } from './dto';
 import { JwtPayload, LoginResponse} from './interfaces';
 
-
+import mongoose from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -108,9 +108,25 @@ export class AuthService {
     return this.userModel.find();
   }
 
+  // --------------------------- Rutas para obtener todos los usuarios que tienen rol user --------------------------- //
+
+  finAllUsers(): Promise<User[]>{
+    return this.userModel.find({roles: 'user'});
+  }
+
+  // --------------------------- Rutas para obtener todos los usuarios que tienen rol admin --------------------------- //
+  finAllAdmins(): Promise<User[]>{
+    return this.userModel.find({roles: 'admin'});
+  }
+
   // -------------------------------- Find User By ID -------------------------------- //
   async findUserByID(userId: string){
-    const user = await this.userModel.findById(userId);
+    const isValid = mongoose.Types.ObjectId.isValid(userId);
+    if(!isValid) throw new HttpException('Usuario no ecnontrado', 400);
+
+    const user = await this.userModel.findById(userId); 
+    if(!user) throw new HttpException('Usuario no ecnontrado', 400);
+
     const { password, ...rest} = user.toJSON(); 
     return rest;
   }
@@ -121,7 +137,7 @@ export class AuthService {
   }
 
   // --------------------------- Rutas para actualizar un usuario --------------------------- //
-  update(id: number, updateAuthDto: UpdateAuthDto) {
+  update(id: string, updateuserDto: UpdateUserDto) {
     return `This action updates a #${id} auth`;
   }
 

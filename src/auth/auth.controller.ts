@@ -5,7 +5,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
-import { CreateUserDto, LoginDto, UpdateAuthDto, RegisterUserDto } from './dto';
+import { CreateUserDto, LoginDto, UpdateUserDto, RegisterUserDto } from './dto';
 import { AuthGuard } from './guards/auth.guard';
 import { User } from './entities/user.entity';
 import { LoginResponse } from './interfaces';
@@ -56,16 +56,31 @@ export class AuthController {
     return this.authService.findAll();
   }
 
+  //EndPoint para obtener todos los usuarios que tienen rol user
+  @UseGuards(AuthGuard)
+  @Get('/users')
+  findAllUsers(@Request() req: Request) {
+    return this.authService.finAllUsers();
+  }
+
+  //EndPoint para oobtener todos los usuarios que tienen rol admin
+  @UseGuards(AuthGuard)
+  @Get('/admins')
+  findAllAdmins(@Request() req: Request){
+    return this.authService.finAllAdmins();
+  }
+
   //EndPoint para obtener un usuario por id
+  @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+    return this.authService.findUserByID(id);
   }
 
   //EndPoint para actualizar un usuario
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.authService.update(id, updateUserDto);
   }
 
   //EndPoint para eliminar un usuario
