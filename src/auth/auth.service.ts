@@ -23,7 +23,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // --------------------------- Ruta para crear un Usuario --------------------------- //
+  // Todo: CheckIdObject
+  async checkIdObject(id: string): Promise<boolean>  {
+    const isValid = mongoose.Types.ObjectId.isValid(id);
+    if(!isValid) throw new HttpException('Usuario no ecnontrado', 404);
+    const user = await this.userModel.findById(id);
+    if(!user) throw new HttpException('Usuario no ecnontrado', 404);
+
+    return true;
+  }
+  
+  // Todo: Ruta para crear un Usuario
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       // Extraer la contrasena del objeto createUserDto
@@ -122,10 +132,9 @@ export class AuthService {
   // -------------------------------- Find User By ID -------------------------------- //
   async findUserByID(userId: string){
     const isValid = mongoose.Types.ObjectId.isValid(userId);
-    if(!isValid) throw new HttpException('Usuario no ecnontrado', 400);
-
+    if(!isValid) throw new HttpException('Usuario no ecnontrado', 404);
     const user = await this.userModel.findById(userId); 
-    if(!user) throw new HttpException('Usuario no ecnontrado', 400);
+    if(!user) throw new HttpException('Usuario no ecnontrado', 404);
 
     const { password, ...rest} = user.toJSON(); 
     return rest;
@@ -137,8 +146,15 @@ export class AuthService {
   }
 
   // --------------------------- Rutas para actualizar un usuario --------------------------- //
-  update(id: string, updateuserDto: UpdateUserDto) {
-    return `This action updates a #${id} auth`;
+  async update(id: string, updateuserDto: UpdateUserDto) {
+
+    const isValid = mongoose.Types.ObjectId.isValid(id);
+    if(!isValid) throw new HttpException('Usuario no ecnontrado', 404);
+
+    const user = await this.userModel.findById(id);
+    if(!user) throw new HttpException('Usuario no ecnontrado', 404);
+
+    user.set(updateuserDto);
   }
 
   // --------------------------- Rutas para eliminar un usuario --------------------------- //
