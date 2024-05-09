@@ -48,11 +48,14 @@ export class AuthController {
   }
 
   //EndPoint para obtener todos los usuarios
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
+  // @Get()
+  // findAll( @Request() req: Request ) {
+  //   return this.authService.findAll();
+  // }
+  
   @Get()
-  findAll( @Request() req: Request ) {
-    // const user = req['user']
-    // return user;
+  findAll() {
     return this.authService.findAll();
   }
 
