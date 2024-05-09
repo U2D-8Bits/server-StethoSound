@@ -29,8 +29,8 @@ export class User {
     @Prop({unique: true, required: true,})
     ced: string;
 
-    @Prop({type:[String], default: ['user']})
-    roles: string[];
+    @Prop({default:'user'})
+    roles: string;
 
     @Prop({default: true})
     isActive: boolean;

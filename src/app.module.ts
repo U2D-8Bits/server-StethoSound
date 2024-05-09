@@ -15,10 +15,13 @@ import { AuthModule } from './auth/auth.module';
     // Modulos de nestJS
     ConfigModule.forRoot(),
 
-    // Modulos de 3eros
-    MongooseModule.forRoot(process.env.MONGO_PROD,{
-      dbName: process.env.MONGO_BD_NAME
-    }),
+    // Modo de Produccion
+    // MongooseModule.forRoot(process.env.MONGO_PROD,{
+    //   dbName: process.env.MONGO_BD_NAME
+    // }),
+
+    // Modo de desarrollo
+    MongooseModule.forRoot(process.env.MONGO_ATLAS),
 
     // Modulos propios
     AuthModule,
