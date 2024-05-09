@@ -16,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot(),
 
     // Modulos de 3eros
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_ATLAS || process.env.MONGO_URI),
 
     // Modulos propios
     AuthModule,
