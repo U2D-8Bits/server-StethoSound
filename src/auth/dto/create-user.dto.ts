@@ -26,6 +26,6 @@ export class CreateUserDto {
     ced: string;
 
     @IsString()
-    roles: string[];
+    roles: string;
 
 }

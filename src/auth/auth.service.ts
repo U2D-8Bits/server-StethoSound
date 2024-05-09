@@ -23,7 +23,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // Todo: CheckIdObject
+
+
+
+
+  //* CheckIdObject
   async checkIdObject(id: string): Promise<boolean>  {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if(!isValid) throw new HttpException('Usuario no ecnontrado', 404);
@@ -32,8 +36,12 @@ export class AuthService {
 
     return true;
   }
+
+
+
+
   
-  // Todo: Ruta para crear un Usuario
+  //! Metodo para crear un usuario (Admin)
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       // Extraer la contrasena del objeto createUserDto
@@ -64,7 +72,11 @@ export class AuthService {
     }
   }
 
-  // --------------------------- Rutas para registrarse --------------------------- //
+
+
+
+
+  //! Metodo para registrarse
   async register(registerDto: RegisterUserDto): Promise<LoginResponse> {
     const user = await this.create({
       name: registerDto.name,
@@ -74,7 +86,7 @@ export class AuthService {
       username: registerDto.username,
       phone: registerDto.phone,
       ced: registerDto.ced,
-      roles: ['user'],
+      roles: 'user',
     });
 
     console.log("Usuario Registrado =>", user)
@@ -85,7 +97,11 @@ export class AuthService {
     };
   }
 
-  // --------------------------- Login --------------------------- //
+
+
+
+
+  //! Metodo Login
   async login(loginDto: LoginDto): Promise<LoginResponse> {
     // Desestructurar el objeto loginDto para obtener el username y password
     const { username, password } = loginDto;
@@ -113,23 +129,38 @@ export class AuthService {
     };
   }
 
-  // --------------------------- Rutas para obtener todos los usuarios --------------------------- //
+
+
+
+
+  //! Metodo para obtener todos los usuarios
   findAll(): Promise <User[]> {
     return this.userModel.find();
   }
 
-  // --------------------------- Rutas para obtener todos los usuarios que tienen rol user --------------------------- //
 
+
+
+
+  //! Metodo para obtener todos los usuarios que tienen rol user
   finAllUsers(): Promise<User[]>{
     return this.userModel.find({roles: 'user'});
   }
 
-  // --------------------------- Rutas para obtener todos los usuarios que tienen rol admin --------------------------- //
+
+
+
+
+  //! Metodo para obtener todos los usuario que tienen rol admin
   finAllAdmins(): Promise<User[]>{
     return this.userModel.find({roles: 'admin'});
   }
+  
 
-  // -------------------------------- Find User By ID -------------------------------- //
+
+
+
+  //! Metodo Buscar usuario por ID
   async findUserByID(userId: string){
     const isValid = mongoose.Types.ObjectId.isValid(userId);
     if(!isValid) throw new HttpException('Usuario no ecnontrado', 404);
@@ -140,12 +171,11 @@ export class AuthService {
     return rest;
   }
 
-  // --------------------------- Rutas para obtener un usuario --------------------------- //
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
 
-  // --------------------------- Rutas para actualizar un usuario --------------------------- //
+
+
+
+  //! Metodo para actualizar un usuario
   async update(id: string, updateuserDto: UpdateUserDto) {
 
     const isValid = mongoose.Types.ObjectId.isValid(id);
@@ -154,15 +184,31 @@ export class AuthService {
     const user = await this.userModel.findById(id);
     if(!user) throw new HttpException('Usuario no ecnontrado', 404);
 
-    user.set(updateuserDto);
+    return this.userModel.findByIdAndUpdate(id, updateuserDto, {new: true});
   }
 
-  // --------------------------- Rutas para eliminar un usuario --------------------------- //
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+
+
+
+
+  //! Metodo para eliminar un usuario
+  async remove(id: string) {
+
+    const isValid = mongoose.Types.ObjectId.isValid(id);
+    if(!isValid) throw new HttpException('Usuario no ecnontrado', 404);
+    const user = await this.userModel.findById(id);
+    if(!user) throw new HttpException('Usuario no ecnontrado', 404);
+
+    this.userModel.findByIdAndDelete(id, {new: true});
+    // Regresamos un mensaje y codigo 200
+    return {message: 'Usuario eliminado', statusCode: 200};
   }
 
-  // --------------------------- Rutas para obtener el JWT --------------------------- //
+
+
+
+
+  //! Metodo para obtener un JWT
   getJwtToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;

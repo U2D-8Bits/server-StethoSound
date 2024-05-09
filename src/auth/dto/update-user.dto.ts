@@ -28,5 +28,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     ced: string;
 
     @IsString()
-    roles: string[];
+    roles: string;
 }
